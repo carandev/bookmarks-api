@@ -1,73 +1,82 @@
 package me.carandev.bookmarksapi.controllers
 
-import me.carandev.bookmarksapi.models.User
-import me.carandev.bookmarksapi.repositories.UsersRepository
+import me.carandev.bookmarksapi.dtos.requests.users.CreateUserRequest
+import me.carandev.bookmarksapi.dtos.requests.users.UpdateUserRequest
+import me.carandev.bookmarksapi.dtos.responses.UserResponse
+import me.carandev.bookmarksapi.services.UsersService
 import me.carandev.bookmarksapi.utils.CustomResponseEntity
+import me.carandev.bookmarksapi.utils.UrlPaths
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/api/v1/users")
-class UsersController(val usersRepository: UsersRepository) {
+@RequestMapping(UrlPaths.API_USERS)
+class UsersController(val service: UsersService) {
 
+    /**
+     * Endpoint para crear un usuario.
+     * @param userRequest Solicitud para crear un usuario.
+     * @return La respuesta del usuario creado.
+     */
     @PostMapping
-    fun createUser(@RequestBody user: User): ResponseEntity<CustomResponseEntity<User?>> {
-        val savedUser = usersRepository.save(user)
-
-        val customResponseEntity =
-            CustomResponseEntity<User?>(savedUser, "Usuario creado con éxito: ${savedUser.id}")
-        return ResponseEntity(customResponseEntity, HttpStatus.CREATED)
+    fun createUser(@RequestBody userRequest: CreateUserRequest): ResponseEntity<CustomResponseEntity<UserResponse?>> {
+        val userResponse = service.create(userRequest)
+        return ResponseEntity(
+            CustomResponseEntity(userResponse, true, "Usuario creado con éxito: ${userResponse.id}"),
+            HttpStatus.CREATED
+        )
     }
 
+    /**
+     * Endpoint para listar los usuarios.
+     * @return La lista de usuarios.
+     */
     @GetMapping
-    fun getUsers(): ResponseEntity<CustomResponseEntity<List<User>>> {
-        val users = usersRepository.findAll()
+    fun getUsers(): ResponseEntity<CustomResponseEntity<List<UserResponse>>> {
+        val users = service.list()
 
         val message = if (users.isEmpty()) "No se encontraron usuarios" else "Usuarios encontrados"
-        val customResponseEntity = CustomResponseEntity<List<User>>(users, message)
-        return ResponseEntity(customResponseEntity, HttpStatus.OK)
+        return ResponseEntity(CustomResponseEntity(users, true, message), HttpStatus.OK)
     }
 
+    /**
+     * Endpoint para encontrar un usuario por su identificador.
+     * @param id Identificador del usuario.
+     * @return La respuesta del usuario encontrado.
+     */
     @GetMapping("/{id}")
-    fun getUserById(@PathVariable id: Long): ResponseEntity<CustomResponseEntity<User?>> {
-        val user = usersRepository.findById(id)
-
-        if (user.isPresent){
-            val customResponseEntity = CustomResponseEntity<User?>(user.get(), "Usuario encontrado")
-            return ResponseEntity(customResponseEntity, HttpStatus.OK)
-        } else {
-            val customResponseEntity = CustomResponseEntity<User?>(null, "Usuario no encontrado")
-            return ResponseEntity(customResponseEntity, HttpStatus.NOT_FOUND)
-        }
+    fun getUserById(@PathVariable id: Long): ResponseEntity<CustomResponseEntity<UserResponse?>> {
+        val user = service.findById(id)
+        return ResponseEntity(CustomResponseEntity(user, true, "Usuario encontrado"), HttpStatus.OK)
     }
 
+    /**
+     * Endpoint para actualizar un usuario por su identificador.
+     * @param id Identificador del usuario.
+     * @param userRequest Datos para actualizar el usuario.
+     * @return La respuesta del usuario actualizado.
+     */
     @PutMapping("/{id}")
-    fun updateUserById(@PathVariable id: Long, @RequestBody user: User): ResponseEntity<CustomResponseEntity<User?>> {
-        val userToUpdate = usersRepository.findById(id)
-
-        if (userToUpdate.isPresent){
-            val updatedUser = userToUpdate.get().copy(name = user.name, email = user.email)
-            usersRepository.save(updatedUser)
-            val customResponseEntity = CustomResponseEntity<User?>(updatedUser, "Usuario actualizado")
-            return ResponseEntity(customResponseEntity, HttpStatus.OK)
-        } else {
-            val customResponseEntity = CustomResponseEntity<User?>(null, "Usuario no encontrado")
-            return ResponseEntity(customResponseEntity, HttpStatus.NOT_FOUND)
-        }
+    fun updateUserById(
+        @PathVariable id: Long,
+        @RequestBody userRequest: UpdateUserRequest
+    ): ResponseEntity<CustomResponseEntity<UserResponse?>> {
+        val updatedUser = service.updateById(id, userRequest)
+        return ResponseEntity(
+            CustomResponseEntity(updatedUser, true, "Usuario actualizado"),
+            HttpStatus.OK
+        )
     }
 
+    /**
+     * Endpoint para eliminar un usuario por su identificador.
+     * @param id Identificador del usuario.
+     * @return La respuesta del usuario eliminado.
+     */
     @DeleteMapping("/{id}")
-    fun deleteUserById(@PathVariable id: Long): ResponseEntity<CustomResponseEntity<String>> {
-        val user = usersRepository.findById(id)
-
-        if (user.isPresent){
-            usersRepository.deleteById(id)
-            val customResponseEntity = CustomResponseEntity<String>(null, "Usuario eliminado")
-            return ResponseEntity(customResponseEntity, HttpStatus.OK)
-        } else {
-            val customResponseEntity = CustomResponseEntity<String>(null, "Usuario no encontrado")
-            return ResponseEntity(customResponseEntity, HttpStatus.NOT_FOUND)
-        }
+    fun deleteUserById(@PathVariable id: Long): ResponseEntity<CustomResponseEntity<UserResponse?>> {
+        val deletedUser = service.deleteUserById(id)
+        return ResponseEntity(CustomResponseEntity(deletedUser, true, "Usuario eliminado"), HttpStatus.OK)
     }
 }
