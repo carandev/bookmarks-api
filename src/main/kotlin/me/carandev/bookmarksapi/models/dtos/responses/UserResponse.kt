@@ -1,4 +1,4 @@
-package me.carandev.bookmarksapi.dtos.responses
+package me.carandev.bookmarksapi.models.dtos.responses
 
 /**
  * Este es el archivo de la respuesta de un usuario.

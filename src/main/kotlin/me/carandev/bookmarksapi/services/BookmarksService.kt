@@ -1,8 +1,8 @@
 package me.carandev.bookmarksapi.services
 
-import me.carandev.bookmarksapi.dtos.requests.bookmarks.CreateBookmarkRequest
-import me.carandev.bookmarksapi.dtos.requests.bookmarks.UpdateBookmarkRequest
-import me.carandev.bookmarksapi.dtos.responses.BookmarkResponse
+import me.carandev.bookmarksapi.models.dtos.requests.bookmarks.CreateBookmarkRequest
+import me.carandev.bookmarksapi.models.dtos.requests.bookmarks.UpdateBookmarkRequest
+import me.carandev.bookmarksapi.models.dtos.responses.BookmarkResponse
 import me.carandev.bookmarksapi.repositories.BookmarksRepository
 import me.carandev.bookmarksapi.repositories.UsersRepository
 import me.carandev.bookmarksapi.utils.exceptions.ConflictException
@@ -29,7 +29,11 @@ class BookmarksService(val bookmarkRepository: BookmarksRepository, val userRepo
 
         val createdBookmark = bookmarkRepository.save(bookmarkRequest.toBookmark())
 
-        return BookmarkResponse(createdBookmark.id, createdBookmark.url, createdBookmark.title)
+        return BookmarkResponse(
+            createdBookmark.id,
+            createdBookmark.url,
+            createdBookmark.title,
+            createdBookmark.tags.map { it.name })
     }
 
     /**
@@ -37,6 +41,7 @@ class BookmarksService(val bookmarkRepository: BookmarksRepository, val userRepo
      * @return La lista de marcadores.
      */
     fun list(): List<BookmarkResponse> = bookmarkRepository.findAllBookmarks()
+        .map { BookmarkResponse(it.getId(), it.getUrl(), it.getTitle(), it.getTags() ?: emptyList()) }
 
     /**
      * Encuentra un marcador por su identificador.
@@ -45,7 +50,18 @@ class BookmarksService(val bookmarkRepository: BookmarksRepository, val userRepo
      * @throws NotFoundException Si el marcador no se encuentra.
      */
     fun findById(id: Long): BookmarkResponse {
-        return bookmarkRepository.findBookmarkById(id) ?: throw NotFoundException("Marcador no encontrado")
+        val bookmarkProjection = bookmarkRepository.findBookmarkById(id)
+
+        if (bookmarkProjection != null) {
+            return BookmarkResponse(
+                bookmarkProjection.getId(),
+                bookmarkProjection.getUrl(),
+                bookmarkProjection.getTitle(),
+                bookmarkProjection.getTags() ?: emptyList()
+            )
+        }
+
+        throw NotFoundException("Marcador no encontrado")
     }
 
     /**
@@ -62,7 +78,11 @@ class BookmarksService(val bookmarkRepository: BookmarksRepository, val userRepo
             val updatedBookmark = bookmarkToUpdate.get().copy(title = bookmarkRequest.title, url = bookmarkRequest.url)
             bookmarkRepository.save(updatedBookmark)
 
-            return BookmarkResponse(updatedBookmark.id, updatedBookmark.url, updatedBookmark.title)
+            return BookmarkResponse(
+                updatedBookmark.id,
+                updatedBookmark.url,
+                updatedBookmark.title,
+                updatedBookmark.tags.map { it.name })
         }
 
         throw NotFoundException("Marcador no encontrado")
@@ -79,7 +99,11 @@ class BookmarksService(val bookmarkRepository: BookmarksRepository, val userRepo
 
         if (bookmark.isPresent) {
             val bookmarkToDelete = bookmark.get()
-            val deletedUser = BookmarkResponse(bookmarkToDelete.id, bookmarkToDelete.url, bookmarkToDelete.title)
+            val deletedUser = BookmarkResponse(
+                bookmarkToDelete.id,
+                bookmarkToDelete.url,
+                bookmarkToDelete.title,
+                bookmarkToDelete.tags.map { it.name })
             bookmarkRepository.deleteById(id)
             return deletedUser
         }

@@ -1,4 +1,4 @@
-package me.carandev.bookmarksapi.dtos.requests.users
+package me.carandev.bookmarksapi.models.dtos.requests.users
 
 /**
  * Solicitud de actualización de un usuario.

@@ -1,6 +1,6 @@
-package me.carandev.bookmarksapi.dtos.requests.bookmarks
+package me.carandev.bookmarksapi.models.dtos.requests.bookmarks
 
-import me.carandev.bookmarksapi.entities.Bookmark
+import me.carandev.bookmarksapi.models.entities.Bookmark
 
 /**
     * Este es el archivo de la solicitud de crear un marcador.

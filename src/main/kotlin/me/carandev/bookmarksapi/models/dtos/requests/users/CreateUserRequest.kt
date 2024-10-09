@@ -1,6 +1,6 @@
-package me.carandev.bookmarksapi.dtos.requests.users
+package me.carandev.bookmarksapi.models.dtos.requests.users
 
-import me.carandev.bookmarksapi.entities.User
+import me.carandev.bookmarksapi.models.entities.User
 
 /**
  * Este es el archivo de la solicitud para crear un usuario.

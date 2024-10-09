@@ -1,9 +1,8 @@
 package me.carandev.bookmarksapi.controllers
 
-import me.carandev.bookmarksapi.repositories.BookmarksRepository
-import me.carandev.bookmarksapi.dtos.requests.bookmarks.CreateBookmarkRequest
-import me.carandev.bookmarksapi.dtos.requests.bookmarks.UpdateBookmarkRequest
-import me.carandev.bookmarksapi.dtos.responses.BookmarkResponse
+import me.carandev.bookmarksapi.models.dtos.requests.bookmarks.CreateBookmarkRequest
+import me.carandev.bookmarksapi.models.dtos.requests.bookmarks.UpdateBookmarkRequest
+import me.carandev.bookmarksapi.models.dtos.responses.BookmarkResponse
 import me.carandev.bookmarksapi.services.BookmarksService
 import me.carandev.bookmarksapi.utils.CustomResponseEntity
 import me.carandev.bookmarksapi.utils.UrlPaths

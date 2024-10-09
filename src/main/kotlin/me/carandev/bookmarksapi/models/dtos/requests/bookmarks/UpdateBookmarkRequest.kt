@@ -1,4 +1,4 @@
-package me.carandev.bookmarksapi.dtos.requests.bookmarks
+package me.carandev.bookmarksapi.models.dtos.requests.bookmarks
 
 /**
  * Solicitud de actualización de un marcador.

@@ -1,9 +1,9 @@
 package me.carandev.bookmarksapi.services
 
 import me.carandev.bookmarksapi.repositories.UsersRepository
-import me.carandev.bookmarksapi.dtos.requests.users.CreateUserRequest
-import me.carandev.bookmarksapi.dtos.requests.users.UpdateUserRequest
-import me.carandev.bookmarksapi.dtos.responses.UserResponse
+import me.carandev.bookmarksapi.models.dtos.requests.users.CreateUserRequest
+import me.carandev.bookmarksapi.models.dtos.requests.users.UpdateUserRequest
+import me.carandev.bookmarksapi.models.dtos.responses.UserResponse
 import me.carandev.bookmarksapi.utils.exceptions.ConflictException
 import me.carandev.bookmarksapi.utils.exceptions.NotFoundException
 import org.springframework.stereotype.Service

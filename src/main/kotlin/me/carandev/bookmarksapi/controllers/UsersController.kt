@@ -1,8 +1,8 @@
 package me.carandev.bookmarksapi.controllers
 
-import me.carandev.bookmarksapi.dtos.requests.users.CreateUserRequest
-import me.carandev.bookmarksapi.dtos.requests.users.UpdateUserRequest
-import me.carandev.bookmarksapi.dtos.responses.UserResponse
+import me.carandev.bookmarksapi.models.dtos.requests.users.CreateUserRequest
+import me.carandev.bookmarksapi.models.dtos.requests.users.UpdateUserRequest
+import me.carandev.bookmarksapi.models.dtos.responses.UserResponse
 import me.carandev.bookmarksapi.services.UsersService
 import me.carandev.bookmarksapi.utils.CustomResponseEntity
 import me.carandev.bookmarksapi.utils.UrlPaths
