@@ -1,5 +1,6 @@
 package me.carandev.bookmarksapi.repositories
 
+import me.carandev.bookmarksapi.models.dtos.projections.IUserProjection
 import me.carandev.bookmarksapi.models.entities.User
 import me.carandev.bookmarksapi.models.dtos.responses.UserResponse
 import org.springframework.data.jpa.repository.JpaRepository
@@ -16,16 +17,16 @@ interface UsersRepository : JpaRepository<User, Long> {
      * Lista todos los usuarios y hace la proyección al DTO.
      * @return Lista de usuarios.
      */
-    @Query("SELECT new me.carandev.bookmarksapi.models.dtos.responses.UserResponse(u.id, u.name, u.email) FROM User u")
-    fun findAllUsers() : List<UserResponse>
+    @Query("SELECT u.id AS id, u.name AS name, u.email AS email FROM User u")
+    fun findAllUsers() : List<IUserProjection>
 
     /**
      * Busca un usuario por su identificador y hace la proyección al DTO.
      * @param id Identificador del usuario.
      * @return Usuario encontrado.
      */
-    @Query("SELECT new me.carandev.bookmarksapi.models.dtos.responses.UserResponse(u.id, u.name, u.email) FROM User u WHERE u.id = :id")
-    fun findUserById(id: Long) : UserResponse?
+    @Query("SELECT u.id AS id, u.name AS name, u.email AS email FROM User u WHERE u.id = :id")
+    fun findUserById(id: Long) : IUserProjection?
 
     /**
      * Verifica si existe un usuario por su correo electrónico.

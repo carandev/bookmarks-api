@@ -37,7 +37,8 @@ class UsersService(val repository: UsersRepository) {
      * Lista los usuarios.
      * @return La lista de usuarios.
      */
-    fun list(): List<UserResponse> = repository.findAllUsers()
+    fun list(): List<UserResponse> =
+        repository.findAllUsers().map { UserResponse(it.getId(), it.getName(), it.getEmail()) }
 
     /**
      * Encuentra un usuario por su identificador.
@@ -46,7 +47,13 @@ class UsersService(val repository: UsersRepository) {
      * @throws NotFoundException Si el usuario no se encuentra.
      */
     fun findById(id: Long): UserResponse {
-        return repository.findUserById(id) ?: throw NotFoundException("Usuario no encontrado")
+        val userProjection = repository.findUserById(id)
+
+        if (userProjection != null) {
+            return UserResponse(userProjection.getId(), userProjection.getName(), userProjection.getEmail())
+        }
+
+        throw NotFoundException("Usuario no encontrado")
     }
 
     /**

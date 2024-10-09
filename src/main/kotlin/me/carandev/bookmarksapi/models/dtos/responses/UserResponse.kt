@@ -6,4 +6,4 @@ package me.carandev.bookmarksapi.models.dtos.responses
  * @property name Nombre del usuario.
  * @property email Correo electrónico del usuario.
  */
-data class UserResponse(val id : Long, val name : String, val email : String)
+data class UserResponse(val id : Long = 0, val name : String = "", val email : String = "")
