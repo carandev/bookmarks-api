@@ -42,7 +42,7 @@ data class Bookmark(
     /**
      *  Etiquetas del marcador
      */
-    @ManyToMany
+    @ManyToMany(cascade = [CascadeType.ALL])
     @JoinTable(
         name = "bookmark_tag",
         joinColumns = [JoinColumn(name = "bookmark_id")],

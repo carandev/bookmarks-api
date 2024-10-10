@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service
  * @constructor Crea un servicio para los usuarios.
  */
 @Service
-class UsersService(val repository: UsersRepository) {
+class UsersService(val repository: UsersRepository, val auth0UsersService: Auth0UsersService) {
 
     /**
      * Crea un usuario.
@@ -28,7 +28,9 @@ class UsersService(val repository: UsersRepository) {
             throw ConflictException("El usuario con el correo ${userRequest.email} ya está registrado.")
         }
 
-        val createdUser = repository.save(userRequest.toUser())
+        val auth0Id = auth0UsersService.createUser(userRequest.email, "bookmarkPassword#1232")
+
+        val createdUser = repository.save(userRequest.toUser(auth0Id))
 
         return UserResponse(createdUser.id, createdUser.name, createdUser.email)
     }

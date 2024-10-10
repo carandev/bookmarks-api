@@ -31,6 +31,12 @@ data class User(
     val email: String,
 
     /**
+     *  Correo del usuario.
+     */
+    @Column(nullable = false, length = UserRules.MAX_EMAIL_LENGTH)
+    val auth0Id: String,
+
+    /**
      *  Listado de marcadores que ha creado el usuario.
      */
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL])

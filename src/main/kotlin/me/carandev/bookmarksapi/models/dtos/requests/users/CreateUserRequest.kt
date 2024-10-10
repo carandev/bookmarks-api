@@ -14,5 +14,5 @@ data class CreateUserRequest(val name: String, val email: String) {
      * Convierte la solicitud en un usuario.
      * @return El usuario creado.
      */
-    fun toUser() = User(name = name, email = email)
+    fun toUser(auth0Id: String) = User(name = name, email = email, auth0Id = auth0Id)
 }
