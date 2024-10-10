@@ -16,7 +16,7 @@ data class Tag(
     /**
      *  Identificador de la etiqueta.
      */
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) val id: Long,
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) val id: Long = 0,
 
     /**
      *  Nombre de la etiqueta.

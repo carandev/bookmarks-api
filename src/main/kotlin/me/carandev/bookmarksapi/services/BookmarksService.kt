@@ -3,14 +3,20 @@ package me.carandev.bookmarksapi.services
 import me.carandev.bookmarksapi.models.dtos.requests.bookmarks.CreateBookmarkRequest
 import me.carandev.bookmarksapi.models.dtos.requests.bookmarks.UpdateBookmarkRequest
 import me.carandev.bookmarksapi.models.dtos.responses.BookmarkResponse
+import me.carandev.bookmarksapi.models.entities.Tag
 import me.carandev.bookmarksapi.repositories.BookmarksRepository
+import me.carandev.bookmarksapi.repositories.TagsRepository
 import me.carandev.bookmarksapi.repositories.UsersRepository
 import me.carandev.bookmarksapi.utils.exceptions.ConflictException
 import me.carandev.bookmarksapi.utils.exceptions.NotFoundException
 import org.springframework.stereotype.Service
 
 @Service
-class BookmarksService(val bookmarkRepository: BookmarksRepository, val userRepository: UsersRepository) {
+class BookmarksService(
+    val bookmarkRepository: BookmarksRepository,
+    val userRepository: UsersRepository,
+    val tagsRepository: TagsRepository
+) {
     /**
      * Crea un marcador.
      * @param bookmarkRequest Solicitud para crear un marcador.
@@ -27,7 +33,8 @@ class BookmarksService(val bookmarkRepository: BookmarksRepository, val userRepo
             throw ConflictException("El marcador con la URL ${bookmarkRequest.url} ya está registrado.")
         }
 
-        val createdBookmark = bookmarkRepository.save(bookmarkRequest.toBookmark())
+        val createdBookmark = bookmarkRepository
+            .save(bookmarkRequest.toBookmark(getBookmarkTags(bookmarkRequest.tags)))
 
         return BookmarkResponse(
             createdBookmark.id,
@@ -75,7 +82,12 @@ class BookmarksService(val bookmarkRepository: BookmarksRepository, val userRepo
         val bookmarkToUpdate = bookmarkRepository.findById(id)
 
         if (bookmarkToUpdate.isPresent) {
-            val updatedBookmark = bookmarkToUpdate.get().copy(title = bookmarkRequest.title, url = bookmarkRequest.url)
+            val updatedBookmark =
+                bookmarkToUpdate.get().copy(
+                    title = bookmarkRequest.title,
+                    url = bookmarkRequest.url,
+                    tags = getBookmarkTags(bookmarkRequest.tags)
+                )
             bookmarkRepository.save(updatedBookmark)
 
             return BookmarkResponse(
@@ -109,5 +121,26 @@ class BookmarksService(val bookmarkRepository: BookmarksRepository, val userRepo
         }
 
         throw NotFoundException("Usuario no encontrado")
+    }
+
+    /**
+     *  Obtiene los tags de los marcadores de la base de datos.
+     *  @param tags Lista de los nombres de los tags.
+     *  @return Lista de tags.
+     */
+    fun getBookmarkTags(tags: List<String>): List<Tag> {
+        val tagsList: MutableList<Tag> = mutableListOf()
+
+        tags.forEach {
+            val tag = tagsRepository.getTagByNameEqualsIgnoreCase(it)
+
+            if (tag != null) {
+                tagsList.add(Tag(id = tag.getId(), name = tag.getName()))
+            } else {
+                tagsList.add(tagsRepository.save(Tag(name = it)))
+            }
+        }
+
+        return tagsList
     }
 }

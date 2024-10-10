@@ -5,4 +5,4 @@ package me.carandev.bookmarksapi.models.dtos.requests.bookmarks
  * @property url URL del marcador.
  * @property title Título del marcador.
  */
-data class UpdateBookmarkRequest(val title: String, val url: String)
+data class UpdateBookmarkRequest(val title: String, val url: String, val tags: List<String>)
