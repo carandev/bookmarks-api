@@ -59,6 +59,22 @@ class UsersService(val repository: UsersRepository, val auth0UsersService: Auth0
     }
 
     /**
+     * Encuentra un usuario por su identificador de Auth0.
+     * @param auth0Id Identificador de Auth0 del usuario.
+     * @return La respuesta del usuario encontrado.
+     * @throws NotFoundException Si el usuario no se encuentra.
+     */
+    fun findByAuth0Id(auth0Id: String): UserResponse {
+        val userProjection = repository.findUserByAuth0Id(auth0Id)
+
+        if (userProjection != null) {
+            return UserResponse(userProjection.getId(), userProjection.getName(), userProjection.getEmail())
+        }
+
+        throw NotFoundException("Usuario no encontrado")
+    }
+
+    /**
      * Actualiza un usuario por su identificador.
      * @param id Identificador del usuario.
      * @param userRequest Datos para actualizar el usuario.

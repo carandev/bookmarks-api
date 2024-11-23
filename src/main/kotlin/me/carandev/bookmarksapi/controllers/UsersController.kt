@@ -52,6 +52,17 @@ class UsersController(val service: UsersService) {
     }
 
     /**
+     * Endpoint para encontrar un usuario por su identificador de Auth0.
+     * @param auth0Id Identificador de Auth0 del usuario.
+     * @return La respuesta del usuario encontrado.
+     */
+    @GetMapping("/auth0/{auth0Id}")
+    fun getUserByAuth0Id(@PathVariable auth0Id: String): ResponseEntity<CustomResponseEntity<UserResponse?>> {
+        val user = service.findByAuth0Id(auth0Id)
+        return ResponseEntity(CustomResponseEntity(user, true, "Usuario encontrado"), HttpStatus.OK)
+    }
+
+    /**
      * Endpoint para actualizar un usuario por su identificador.
      * @param id Identificador del usuario.
      * @param userRequest Datos para actualizar el usuario.
