@@ -4,6 +4,7 @@ import me.carandev.bookmarksapi.models.dtos.requests.bookmarks.CreateBookmarkReq
 import me.carandev.bookmarksapi.models.dtos.requests.bookmarks.UpdateBookmarkRequest
 import me.carandev.bookmarksapi.models.dtos.responses.BookmarkResponse
 import me.carandev.bookmarksapi.models.entities.Tag
+import me.carandev.bookmarksapi.models.entities.User
 import me.carandev.bookmarksapi.repositories.BookmarksRepository
 import me.carandev.bookmarksapi.repositories.TagsRepository
 import me.carandev.bookmarksapi.repositories.UsersRepository
@@ -25,13 +26,17 @@ class BookmarksService(
      */
     fun create(bookmarkRequest: CreateBookmarkRequest): BookmarkResponse {
 
-        if (!userRepository.existsById(bookmarkRequest.userId)) {
+        val userProjection = userRepository.findUserById(bookmarkRequest.userId);
+
+        if (userProjection == null) {
             throw NotFoundException("El usuario con el id ${bookmarkRequest.userId} no existe.")
         }
 
         if (bookmarkRepository.existsBookmarkByUrl(bookmarkRequest.url)) {
             throw ConflictException("El marcador con la URL ${bookmarkRequest.url} ya está registrado.")
         }
+
+        var user = User(userProjection.getId(), userProjection.getName(), userProjection.getEmail())
 
         val createdBookmark = bookmarkRepository
             .save(bookmarkRequest.toBookmark(getBookmarkTags(bookmarkRequest.tags)))
