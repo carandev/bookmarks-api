@@ -13,4 +13,11 @@ object UserRules {
      *  Tamaño maximo del correo del usuario.
      */
     const val MAX_EMAIL_LENGTH = 250
+
+    /**
+     *  Query para obtener todos los usuarios.
+     */
+    const val FIND_ALL_USERS_QUERY = "SELECT u.id AS id, u.name AS name, u.email AS email FROM User u";
+
+    const val FIND_USER_BY_ID = "SELECT u.id AS id, u.name AS name, u.email AS email FROM User u WHERE u.id = :id";
 }

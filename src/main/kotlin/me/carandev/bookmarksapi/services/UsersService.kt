@@ -59,6 +59,15 @@ class UsersService(val repository: UsersRepository, val auth0UsersService: Auth0
     }
 
     /**
+     * Valída si existe un usuario por el correo indicado.
+     * @param email Correo electrónico
+     * @return Verdadero si existe o falso de lo contrario
+     */
+    fun existsUserByEmail(email: String): Boolean {
+        return repository.existsUserByEmail(email)
+    }
+
+    /**
      * Encuentra un usuario por su identificador de Auth0.
      * @param auth0Id Identificador de Auth0 del usuario.
      * @return La respuesta del usuario encontrado.

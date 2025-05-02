@@ -24,7 +24,7 @@ class SecurityConfig {
                 oauth2
                     .jwt(withDefaults())
             }
-            .build();
+            .build()
     }
 
     // Configuración global de CORS

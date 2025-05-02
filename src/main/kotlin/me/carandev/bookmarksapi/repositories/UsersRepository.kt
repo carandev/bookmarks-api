@@ -2,7 +2,7 @@ package me.carandev.bookmarksapi.repositories
 
 import me.carandev.bookmarksapi.models.dtos.projections.IUserProjection
 import me.carandev.bookmarksapi.models.entities.User
-import me.carandev.bookmarksapi.models.dtos.responses.UserResponse
+import me.carandev.bookmarksapi.utils.rules.UserRules
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
@@ -17,7 +17,7 @@ interface UsersRepository : JpaRepository<User, Long> {
      * Lista todos los usuarios y hace la proyección al DTO.
      * @return Lista de usuarios.
      */
-    @Query("SELECT u.id AS id, u.name AS name, u.email AS email FROM User u")
+    @Query(UserRules.FIND_ALL_USERS_QUERY)
     fun findAllUsers() : List<IUserProjection>
 
     /**
@@ -25,7 +25,7 @@ interface UsersRepository : JpaRepository<User, Long> {
      * @param id Identificador del usuario.
      * @return Usuario encontrado.
      */
-    @Query("SELECT u.id AS id, u.name AS name, u.email AS email FROM User u WHERE u.id = :id")
+    @Query(UserRules.FIND_USER_BY_ID)
     fun findUserById(id: Long) : IUserProjection?
 
     /**

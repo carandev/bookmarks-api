@@ -26,7 +26,7 @@ class BookmarksService(
      */
     fun create(bookmarkRequest: CreateBookmarkRequest): BookmarkResponse {
 
-        val userProjection = userRepository.findUserById(bookmarkRequest.userId);
+        val userProjection = userRepository.findUserById(bookmarkRequest.userId)
 
         if (userProjection == null) {
             throw NotFoundException("El usuario con el id ${bookmarkRequest.userId} no existe.")
@@ -36,10 +36,10 @@ class BookmarksService(
             throw ConflictException("El marcador con la URL ${bookmarkRequest.url} ya está registrado.")
         }
 
-        var user = User(userProjection.getId(), userProjection.getName(), userProjection.getEmail())
+        val user = User(userProjection.getId(), userProjection.getName(), userProjection.getEmail(), userProjection.getAuth0Id())
 
         val createdBookmark = bookmarkRepository
-            .save(bookmarkRequest.toBookmark(getBookmarkTags(bookmarkRequest.tags)))
+            .save(bookmarkRequest.toBookmark(user, getBookmarkTags(bookmarkRequest.tags)))
 
         return BookmarkResponse(
             createdBookmark.id,

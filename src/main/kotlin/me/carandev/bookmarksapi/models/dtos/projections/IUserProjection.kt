@@ -4,4 +4,5 @@ interface IUserProjection {
     fun getId(): Long
     fun getName(): String
     fun getEmail(): String
+    fun getAuth0Id(): String
 }
